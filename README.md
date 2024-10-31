@@ -93,6 +93,7 @@ Also, we will need to stop Source and Destination check from the instance.
 ![](./screenshots/Pasted%20image%2020241025212645.png)
 
 ![](./screenshots/Pasted%20image%2020241025212732.png)
+
 ### Lets create the required gateways
 #### Internet Gateway
 You will need to navigate to the **Internet Gateway** section and create a new Internet Gateway. I will name this `on-premise-igw`. Remember, we are only creating one Internet Gateway to be used for the `vpc-on-premises` VPC.
@@ -102,17 +103,21 @@ You will need to navigate to the **Internet Gateway** section and create a new I
 ![](./screenshots/Pasted%20image%2020241025202626.png)
 
 ![](./screenshots/Pasted%20image%2020241025202959.png)
+
 **Don't forget to attach it to the `vpc-on-premise`**
 
 >[!IMPORTANT]
 >**on-premise-public-subnet - Internet Access**: Before we move on, lets take a look at the routing table of *on-premise-public-subnet*, we will need to add this **Internet Gateway** to it. This will ensure that all instances within the  `on-premise-public-subnet`, will have internet access.
   
 ![](./screenshots/Pasted%20image%2020241025210453.png)
+
 ![](./screenshots/Pasted%20image%2020241025210620.png)
 
 ![](./screenshots/Pasted%20image%2020241025210718.png)
+
 #### Customer Gateway
 Under *Virtual Private Network* VPN section, navigate to *Customer Gateway*. Create a new one.
+
 ![](./screenshots/Pasted%20image%2020241025211034.png)
 
 I used the public IP address of the `on-premise-instance` I created earlier. This instance will serve as the on-premises site.
@@ -133,17 +138,22 @@ This *Virtual Private Gateway* needs to be attached to the *aws-vpc* `VPC`.
 
 
 ![](./screenshots/Pasted%20image%2020241025213009.png)
+
 Now the VPC attached to the *Virtual Private Gateway*.
 
 >[!IMPORTANT]
 >Attach the `VPC` not the `vpc-on-premise`
 ### Site To Site VPN Connection
+
 ![](./screenshots/Pasted%20image%2020241025213228.png)
+
 Now we will create a site to site vpn connection.
+
 ![](./screenshots/Pasted%20image%2020241025213606.png)
 
 
 ![](./screenshots/Pasted%20image%2020241025214413.png)
+
 ![](./screenshots/Pasted%20image%2020241025214539.png)
 
 As you can see the tunnels are down. Lets download the configuration file for now. I will be using *strongSwan*.
@@ -156,10 +166,13 @@ This instance won't have a public ip address, and no key is required. Just in th
 ![](./screenshots/Pasted%20image%2020241025220137.png)
 
 ![](./screenshots/Pasted%20image%2020241025220224.png)
+
 ![](./screenshots/Pasted%20image%2020241025220304.png)
 
 Now will need to ensure this instance accepts traffic from a specific IP CIDR block. *10.0.0.0/24*
+
 ![](./screenshots/Pasted%20image%2020241025220341.png)
+
 ##### Lets go back to route tables now.
 Before starting to configure the strongswan, lets make sure the route tables are set correctly, lets start with the AWS-VPC private-subnet. Since its closer to the **Virtual Private Gateway**. It needs to route traffic to the other on-premise-public-subnet. using the virtual private gateway.
 
@@ -211,6 +224,7 @@ sudo vim /etc/sysctl.conf
 ```
 
 ![](./screenshots/Pasted%20image%2020241026105657.png)
+
 Uncomment `net.ipv4.ip_forward=1`
 
 Now we need to apply the changes:
@@ -226,6 +240,7 @@ sudo vim /etc/ipsec.conf
 ```
 
 ![](./screenshots/Pasted%20image%2020241026110112.png)
+
 Uncomment `uniqueids = no`
 
 And copy the following from your config file. And paste it at the end of `/etc/ipsec.conf` file.
@@ -237,7 +252,9 @@ We will need to modify the last line. Uncomment the last line that starts with `
 ![](./screenshots/Pasted%20image%2020241026110555.png)
 
 This is **tunnel 1**, we will do the same thing for **tunnel 2**. First, find it from your configuration file.
+
 ![](./screenshots/Pasted%20image%2020241026110735.png)
+
 Then copy it and uncommment the last line that starts with `leftupdown=...` and update the `<VPC CIDR>` This CIDR range is the `AWS-VPC` not the `on-premise-vpc`. Which is `10.1.0.0/16`
 
 Next, open `/etc/ipsec.secrets`
@@ -247,9 +264,13 @@ sudo vim /etc/ipsec.secrets
 ```
 
 ![](./screenshots/Pasted%20image%2020241026112226.png)
+
 This is the shared secret for the tunnel 1, there is also another shared secret for tunnel 2.
+
 ![](./screenshots/Pasted%20image%2020241026112338.png)
+
 ![](./screenshots/Pasted%20image%2020241026112436.png)
+
 Copy them and add them to the file.
 
 Next, we will create a new file. At `/etc/ipsec.d/aws-updown` and copy the following code from your configuration file.
