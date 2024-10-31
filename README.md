@@ -3,7 +3,7 @@ Omar BaGunaid
 In this document, I will go through the steps to implement a Site-to-Site Virtual Private Network (VPN) using an on-premises network simulated as a separate Virtual Private Cloud (VPC). And the other will be the VPC we connect to via the VPN.
 ## Requirements
 ### Topology
-![[SiteToSiteVPN.png]]
+![](./screenshots/SiteToSiteVPN.png)
 ##### Resources
 1. vpc-on-premise (10.0.0.0/16)
 	1. public-subnet (10.0.0.0/24)
@@ -78,11 +78,12 @@ These are the network settings. Make sure to assign a public ip address for this
 
 Make sure to add SSH security group, we will want to connect to it later.
 
->[!NOTE] NOTE
+>[!NOTE] Security Groups Rules
 You can assign your public IP address to limit access to that instance for secure login. To do this, make sure to select _My IP_ from _Source type_. This ensures that only your home public IP address is allowed to connect to the instance.
 
 ![[Pasted image 20241025205600.png]]
->[!NOTE] Denote public ip
+
+>[!NOTE] Instance Public IP address
 >Copy the public ip address of the created instance, we will be needing that later for the *Customer Gateway* as well as to login to that instance. 
 
 Also, we will need to stop Source and Destination check from the instance.
@@ -100,7 +101,7 @@ You will need to navigate to the **Internet Gateway** section and create a new I
 **Don't forget to attach it to the `vpc-on-premise`**
 
 >[!IMPORTANT] on-premise-public-subnet - Internet Access
->Before we move on, lets take a look at the routing table of *on-premise-public-subnet*, we will need to add this **Internet Gateway** to it. This will ensure that all instances that are in this subnet, will have internet access.
+>Before we move on, lets take a look at the routing table of *on-premise-public-subnet*, we will need to add this **Internet Gateway** to it. This will ensure that all instances within the  `on-premise-public-subnet`, will have internet access.
   
 ![[Pasted image 20241025210453.png]]
 ![[Pasted image 20241025210620.png]]
@@ -283,7 +284,7 @@ Lets check our **Site To Site VPN** and confirm that the tunnels are working.
 
 ![[Pasted image 20241026114139.png]]
 
-#### The last part (static route & ping)
+#### *The last part (set static route & ping instance)*
 
 Before we ping the private aws-instance using its private ip address, we will need to add the `on-premise-instance` private IP address or its VPC CIDR block, in the static routes of the Site To Site VPN we created.
 
@@ -311,6 +312,3 @@ Ping from 10.0.0.87 (on-premise-instance) to 10.1.0.179 (aws-instance)
 With a few additional modifications to the AWS VPC, we can add more public and private subnets and possibly another bastion host or multiple instances. We can also SSH into any AWS instance using only its private IP address, but we must enable SSH access in the security groups.
 
 Additionally, it’s important to note that, since we included the entire on-premises CIDR range in the Site-to-Site VPN configuration *static IPs*, any instance within that on-premises CIDR block can securely access resources within the AWS VPC using their private ip addresses, as long as appropriate routing and security group rules are configured.
-
-Thank you,
-Omar BaGunaid
