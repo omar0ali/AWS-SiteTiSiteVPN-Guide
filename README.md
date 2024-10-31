@@ -108,7 +108,7 @@ You will need to navigate to the **Internet Gateway** section and create a new I
 >**on-premise-public-subnet - Internet Access**: Before we move on, lets take a look at the routing table of *on-premise-public-subnet*, we will need to add this **Internet Gateway** to it. This will ensure that all instances within the  `on-premise-public-subnet`, will have internet access.
   
 ![](./screenshots/Pasted%20image%2020241025210453.png)
-![[Pasted image 20241025210620.png]]
+![](./screenshots/Pasted%20image%2020241025210620.png)
 
 ![](./screenshots/Pasted%20image%2020241025210718.png)
 #### Customer Gateway
@@ -132,7 +132,7 @@ This *Virtual Private Gateway* needs to be attached to the *aws-vpc* `VPC`.
 ![](./screenshots/Pasted%20image%2020241025212359.png)
 
 
-![[Pasted image 20241025213009.png]]
+![](./screenshots/Pasted%20image%2020241025213009.png)
 Now the VPC attached to the *Virtual Private Gateway*.
 
 >[!IMPORTANT]
