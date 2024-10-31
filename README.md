@@ -55,7 +55,6 @@ Secondly, creating a subnet for the other VPC, `vpc`. For this one, I will name 
 ![](./screenshots/Pasted%20image%2020241025200916.png)
 
 >[!NOTE]
->**Total Subnets**
 >Total of required subnets for this Site To Site VPN. Only two subnets, one will be used for the on-premise machine, and the other one will be used on other side, will be used to connect to the instances within the subnet using the tunnels by the Site To Site VPN.
 >![](./screenshots/Pasted%20image%2020241025201114.png)
 
@@ -82,12 +81,12 @@ These are the network settings. Make sure to assign a public ip address for this
 
 Make sure to add SSH security group, we will want to connect to it later.
 
->[!NOTE] Security Groups Rules
-You can assign your public IP address to limit access to that instance for secure login. To do this, make sure to select _My IP_ from _Source type_. This ensures that only your home public IP address is allowed to connect to the instance.
+>[!NOTE]
+>**Security Groups Rules**: You can assign your public IP address to limit access to that instance for secure login. To do this, make sure to select _My IP_ from _Source type_. This ensures that only your home public IP address is allowed to connect to the instance.
 
 ![](./screenshots/Pasted%20image%2020241025205600.png)
 
->[!NOTE] Instance Public IP address
+>[!NOTE]
 >Copy the public ip address of the created instance, we will be needing that later for the *Customer Gateway* as well as to login to that instance. 
 
 Also, we will need to stop Source and Destination check from the instance.
@@ -105,8 +104,8 @@ You will need to navigate to the **Internet Gateway** section and create a new I
 ![](./screenshots/Pasted%20image%2020241025202959.png)
 **Don't forget to attach it to the `vpc-on-premise`**
 
->[!IMPORTANT] on-premise-public-subnet - Internet Access
->Before we move on, lets take a look at the routing table of *on-premise-public-subnet*, we will need to add this **Internet Gateway** to it. This will ensure that all instances within the  `on-premise-public-subnet`, will have internet access.
+>[!IMPORTANT]
+>**on-premise-public-subnet - Internet Access**: Before we move on, lets take a look at the routing table of *on-premise-public-subnet*, we will need to add this **Internet Gateway** to it. This will ensure that all instances within the  `on-premise-public-subnet`, will have internet access.
   
 ![](./screenshots/Pasted%20image%2020241025210453.png)
 ![[Pasted image 20241025210620.png]]
@@ -117,7 +116,6 @@ Under *Virtual Private Network* VPN section, navigate to *Customer Gateway*. Cre
 ![](./screenshots/Pasted%20image%2020241025211034.png)
 
 I used the public IP address of the `on-premise-instance` I created earlier. This instance will serve as the on-premises site.
-
 
 ![](./screenshots/Pasted%20image%2020241025211732.png)
 #### Virtual Private Gateway
@@ -137,7 +135,8 @@ This *Virtual Private Gateway* needs to be attached to the *aws-vpc* `VPC`.
 ![[Pasted image 20241025213009.png]]
 Now the VPC attached to the *Virtual Private Gateway*.
 
->[!IMPORTANT] We are attaching the `VPC` not the `vpc-on-premise`
+>[!IMPORTANT]
+>Attach the `VPC` not the `vpc-on-premise`
 ### Site To Site VPN Connection
 ![](./screenshots/Pasted%20image%2020241025213228.png)
 Now we will create a site to site vpn connection.
@@ -156,7 +155,6 @@ This instance won't have a public ip address, and no key is required. Just in th
 
 ![](./screenshots/Pasted%20image%2020241025220137.png)
 
-
 ![](./screenshots/Pasted%20image%2020241025220224.png)
 ![](./screenshots/Pasted%20image%2020241025220304.png)
 
@@ -168,7 +166,7 @@ Before starting to configure the strongswan, lets make sure the route tables are
 ##### Vpc-aws routing table
 
 ![](./screenshots/Pasted%20image%2020241025221050.png)
-![[Pasted image 20241025221208.png]]
+![](./screenshots/Pasted%20image%2020241025221208.png)
 ![](./screenshots/Pasted%20image%2020241025221129.png)
 
 ##### On-premise-public-subnet route table
@@ -201,12 +199,12 @@ ubuntu@ip-10-0-0-87:~$ sudo apt install strongswan
 
 ##### Open `/etc/sysctl.conf`
 
->[!NOTE] Editor  
-I am using Vim to edit these files; you can use any editor, such as `nano`, which is also available.  
+>[!NOTE]
+>**Editor**: I am using Vim to edit these files; you can use any editor, such as `nano`, which is also available.  
 Please refer to the documentation for either [Vim](https://vimdoc.sourceforge.net/htmldoc/usr_toc.html) or [Nano](https://www.nano-editor.org/docs.php).
  
->[!IMPORTANT] Check Your Configuration File
->Check your configuration file downloaded from the Site To Site VPN Connection Page. You can follow the steps provided in the file. I am going through the steps used for strongswan.
+>[!IMPORTANT]
+>**Check Your Configuration File**: Check your configuration file downloaded from the Site To Site VPN Connection Page. You can follow the steps provided in the file. I am going through the steps used for strongswan.
 
 ```
 sudo vim /etc/sysctl.conf
@@ -310,18 +308,19 @@ Before we ping the private aws-instance using its private ip address, we will ne
 
 ![](./screenshots/Pasted%20image%2020241026115424.png)
 
->[!NOTE] NOTE
+>[!NOTE]
 >You can set the whole range of the on-premise-vpc, or just a specific IP address i.e the on-premise-instance.
 ![](./screenshots/Pasted%20image%2020241026115538.png)
 ![](./screenshots/Pasted%20image%2020241026115424.png)
  You can add one of these two.
 
->[!CAUTION] Don't forget to click on it *from the drop-down list* and save changes.
+>[!CAUTION]
+>Don't forget to click on it *from the drop-down list* and save changes.
 ![](./screenshots/Pasted%20image%2020241026120309.png)
 
 ![](./screenshots/Pasted%20image%2020241026115358.png)
 
->[!NOTE] For testing
+>[!NOTE]
 >I have tested it in both ways, from a specific range i.e 10.0.0.0/16 (vpc-on-premise), and from a specific private ip address of an instance 10.0.0.87/32 (on-premise-instance).
 
 Ping from 10.0.0.87 (on-premise-instance) to 10.1.0.179 (aws-instance)
