@@ -54,7 +54,8 @@ Secondly, creating a subnet for the other VPC, `vpc`. For this one, I will name 
 
 ![](./screenshots/Pasted%20image%2020241025200916.png)
 
->[!NOTE] Total Subnets
+>[!NOTE]
+>**Total Subnets**
 >Total of required subnets for this Site To Site VPN. Only two subnets, one will be used for the on-premise machine, and the other one will be used on other side, will be used to connect to the instances within the subnet using the tunnels by the Site To Site VPN.
 >![](./screenshots/Pasted%20image%2020241025201114.png)
 
