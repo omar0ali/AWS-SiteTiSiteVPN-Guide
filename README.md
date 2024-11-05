@@ -92,6 +92,16 @@ Make sure to add SSH security group, we will want to connect to it later.
 Also, we will need to stop Source and Destination check from the instance.
 ![](./screenshots/Pasted%20image%2020241025212645.png)
 
+>[!NOTE]
+>Stopping this will allow the instance to route traffic. It can accept data from one network and send it to another, acting like a bridge between different networks. Because that Instance will act as a VPN endpoint.
+>
+>---
+>Adding more instances to that VPC, will just have to route its traffic to that VPN Endpoint.
+>
+>---
+>*This instance do not originate or terminate traffic, its forwarding it between different networks.*
+>**[https://www.linkedin.com/pulse/why-do-we-disable-sourcedestination-checks-nat-instance-usman-ahmad/](https://www.linkedin.com/pulse/why-do-we-disable-sourcedestination-checks-nat-instance-usman-ahmad/)**
+
 ![](./screenshots/Pasted%20image%2020241025212732.png)
 
 ### Lets create the required gateways
